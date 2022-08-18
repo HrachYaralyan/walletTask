@@ -3,17 +3,23 @@ import React from 'react';
 import Accounts from './accounts';
 import Header from './layout/header';
 import SideBar from './layout/sideBar';
+import styled from 'styled-components';
 
 function App() {
   return (
     <>
       <Header />
-      <div className='d-flex'>
+      <Header />
+      <DisplayFlex>
         <SideBar />
         <Accounts />
-      </div>
+      </DisplayFlex>
     </>
   );
 }
+
+const DisplayFlex = styled.div`
+  display: flex;
+`;
 
 export default App;

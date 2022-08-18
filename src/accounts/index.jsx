@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Wallet from "./wallet";
+import Swal from "sweetalert2";
 import axios from 'axios';
+import Wallet from "./wallet";
 import AddWalletModal from "../modals/addWallet";
 import Loader from "../components/shared/Loader";
-import Swal from "sweetalert2";
 
 import "./style.scss"
 
@@ -13,7 +13,7 @@ export default function Accounts() {
     const [getNewData, setGetNewData] = useState(false)
     const [isLoaded, setIsLoaded] = useState(true)
 
-    function ErrorAlert() {
+    const errorAlert = () => {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -28,7 +28,7 @@ export default function Accounts() {
             setIsLoaded(false);
         }).catch((err) => {
             console.log(err);
-            ErrorAlert()
+            errorAlert()
         });
     }, [getNewData])
 
