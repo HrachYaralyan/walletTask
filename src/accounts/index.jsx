@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import Wallet from "./wallet";
 import axios from 'axios';
 import AddWalletModal from "../modals/addWallet";
@@ -9,12 +8,10 @@ import Swal from "sweetalert2";
 import "./style.scss"
 
 export default function Accounts() {
-
-    const [accountDB, setAccountDB] = useState([]);
+    const [walletData, setWalletData] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [updateDB, setSpdateDB] = useState(false)
-    const [isLoaded, setIsLoaded] = useState(false)
-    const [isError, setIsError] = useState(false)
+    const [getNewData, setGetNewData] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(true)
 
     function ErrorAlert() {
         Swal.fire({
@@ -24,19 +21,16 @@ export default function Accounts() {
             footer: '<a href="/">try Again ?</a>'
         })
     }
+
     useEffect(() => {
-        const getData = async () => {
-            setIsLoaded(true);
-            await axios.get(`http://localhost:3090/accounts`).then((res) => {
-                setAccountDB(res.data)
-                setIsLoaded(false);
-            }).catch((err) => {
-                console.log(err);
-                setIsError(true)
-            });
-        }
-        getData();
-    }, [updateDB])
+        axios.get(`http://localhost:3090/accounts`).then((res) => {
+            setWalletData(res.data)
+            setIsLoaded(false);
+        }).catch((err) => {
+            console.log(err);
+            ErrorAlert()
+        });
+    }, [getNewData])
 
     return (
         <div className="accountsWrapper">
@@ -45,23 +39,18 @@ export default function Accounts() {
                 <div className="addNew" onClick={() => { setModalIsOpen(true) }}>+ Add new wallet</div>
             </div>
             <div className="accounts">
-                {
-                    isError ? ErrorAlert()
-                        : isLoaded ? <Loader />
-                            : accountDB.map((item, index) => {
-                                return (
-                                    <Wallet key={item.id}
-                                        walletName={item.name}
-                                        walletIMG={item.imgURL}
-                                        balance={item.balance}
-                                        currency={item.currency}
-                                    />
-                                )
-                            })
+                {isLoaded ? <Loader />
+                    : walletData.map((item) => {
+                        return (
+                            <Wallet key={item.id}
+                                item={item}
+                            />
+                        )
+                    })
 
                 }
             </div>
-            <AddWalletModal isOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} updateDB={updateDB} setSpdateDB={setSpdateDB} />
+            <AddWalletModal isOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} getNewData={getNewData} setGetNewData={setGetNewData} />
         </div>
     )
 }
