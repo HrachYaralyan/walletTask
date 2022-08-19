@@ -1,9 +1,8 @@
 import React from 'react';
-
+import styled from 'styled-components';
 import Accounts from './accounts';
 import Header from './layout/header';
 import SideBar from './layout/sideBar';
-import styled from 'styled-components';
 
 function App() {
   return (

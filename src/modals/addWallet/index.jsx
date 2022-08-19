@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import styled from 'styled-components';
 import Swal from "sweetalert2";
-
-import "./style.scss"
 import Loader from "../../components/shared/Loader";
 
-export default function AddWalletModal({ isOpen, setModalIsOpen, updateDB, setSpdateDB }) {
-
+export default function AddWalletModal({ isOpen, setModalIsOpen, getNewData, setGetNewData }) {
     const [selectedWallet, setSelectedWallet] = useState('Stellar');
     const [sendServerWalletName, setSendServerWalletName] = useState([])
-    const [isLoaded, setIsLoaded] = useState(false)
-    const [isError, setIsError] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(true)
     const [getDataAgain, setGetDataAgain] = useState(false)
 
-    function ErrorAlert() {
+    function errorAlert() {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -26,19 +22,14 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, updateDB, setSp
     }
 
     useEffect(() => {
-        const getData = async () => {
-            setIsLoaded(true);
-            await axios.get(`http://localhost:3090/wallets`).then((res) => {
-                setSendServerWalletName(res.data)
-                setIsLoaded(false);
-            }).catch((err) => {
-                console.log(err);
-                setIsError(true)
-            });
-        }
-        getData();
+        axios.get(`http://localhost:3090/wallets`).then((res) => {
+            setSendServerWalletName(res.data)
+            setIsLoaded(false);
+        }).catch((err) => {
+            console.log(err);
+            errorAlert()
+        });
     }, [selectedWallet, getDataAgain])
-
 
     const sendDatatoServer = () => {
         let filteredWallet = sendServerWalletName.filter((i) => i.name === selectedWallet)
@@ -50,12 +41,11 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, updateDB, setSp
                 headers: {},
                 data: { 'currency': filteredWalletOBJ, }
             });
-            setSpdateDB(!updateDB);
+            setGetNewData(!getNewData);
             setModalIsOpen(false);
         } catch (err) {
             console.log(err);
         }
-
     }
 
     const changeFruit = (newSelect) => {
@@ -63,45 +53,118 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, updateDB, setSp
     }
 
     return (isOpen &&
-        <div className="addWalletWrapper">
-            <div className="modalInfo">
-                <div className="title">
+        <AddWalletWrapper>
+            <ModalInfo>
+                <TitleBox>
                     <h3>Add new wallet</h3>
-                    <div><button onClick={() => setModalIsOpen(false)} className="closeModal">x</button></div>
-                </div>
-                <p>
+                    <CloseModal onClick={() => setModalIsOpen(false)}> X </CloseModal>
+                </TitleBox>
+                <TitleInfo>
                     The crypto wallet will be created instantly and be available in your list of wallets.
-                </p>
+                </TitleInfo>
                 <div>
-                    {
-                        isError ? ErrorAlert()
-                            : isLoaded ? <Loader />
-                                : <form >
-                                    <select
-                                        onChange={(event) => changeFruit(event.target.value)}
-                                        value={selectedWallet}
-                                        className="select"
-                                    >
-                                        <option value="Stellar">Stellar</option>
-                                        <option value="Litecoin">Litecoin</option>
-                                        <option value="SureRemit">SureRemit</option>
-                                        <option value="Tether">Tether</option>
-                                        <option value="Ripple">Ripple</option>
-                                        <option value="Dogecoin">Dogecoin</option>
-                                        <option value="TRON">TRON</option>
-                                    </select>
-                                </form>
+                    {isLoaded ? <Loader />
+                        : <form >
+                            <SelectItems onChange={(event) => changeFruit(event.target.value)} value={selectedWallet}>
+                                <option value="Stellar">Stellar</option>
+                                <option value="Litecoin">Litecoin</option>
+                                <option value="SureRemit">SureRemit</option>
+                                <option value="Tether">Tether</option>
+                                <option value="Ripple">Ripple</option>
+                                <option value="Dogecoin">Dogecoin</option>
+                                <option value="TRON">TRON</option>
+                            </SelectItems>
+                        </form>
                     }
-
                 </div>
-                <div className="d-flex">
-                    <button className="createdBtn" onClick={sendDatatoServer}>
+                <D_Flex>
+                    <CreatedBtn onClick={sendDatatoServer}>
                         Created
-                    </button>
-                </div>
-            </div>
-        </div>
-
-
+                    </CreatedBtn>
+                </D_Flex>
+            </ModalInfo>
+        </AddWalletWrapper>
     )
 }
+
+const AddWalletWrapper = styled.div`
+position: fixed;
+height: 100vh;
+width: 100%;
+background-color: rgba(0, 0, 0, 0.4);
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 999;
+display: flex;
+justify-content: flex-end;
+animation-name: slowmation;
+animation-duration: 2s;
+`;
+
+const ModalInfo = styled.div`
+width: 440px;
+height: 100%;
+max-width: 100%;
+background: #ffffff;
+overflow-y: auto;
+padding: 20px;
+padding-top: 80px;
+`;
+
+const TitleBox = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+`;
+
+const TitleInfo = styled.div`
+font-family: 'Aribau Grotesk';
+font-style: normal;
+font-weight: 400;
+font-size: 18px;
+line-height: 26px;
+`;
+
+const CloseModal = styled.button`
+background: white;
+font-weight: 700;
+font-size: 18px;
+transition: 0.5s;
+&:hover {
+  transform: rotate(180deg);
+  background: black;
+  color: #ffffff;
+}
+`;
+
+const SelectItems = styled.select`
+margin-top: 40px;
+width: 100%;
+height: 50px;
+font-family: 'Aribau Grotesk';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 16px;
+`;
+
+const D_Flex = styled.div`
+margin-top: 150px;
+display: flex;
+justify-content: center;
+`;
+
+const CreatedBtn = styled.button`
+background: #000000;
+border-radius: 40px;
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 18px 54px;
+gap: 10px;
+cursor: pointer;
+color: #ffffff;
+}
+`;

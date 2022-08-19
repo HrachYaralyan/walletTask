@@ -1,31 +1,24 @@
 import React from "react";
-
-import arrow from '../../resources/pictures/arrow.png'
 import styled from 'styled-components';
+import arrow from '../../resources/pictures/arrow.png'
 import img from '../../resources/pictures/walletBg.png'
-import "./style.scss"
 
 export default function Wallet({ item }) {
-    console.log(process.env.PUBLIC_URL + img, "dlsds;csdckm");
     return (
-        <>
-            <WalletWrapper img={img} >
-                <Container>
-                    <Title>
-                        <div>
-                            <WalletIMG src={item.imgURL} />
-                        </div>
-                        <h5>{item.name}</h5>
-                    </Title>
-                    <Balance>
-                        <H4>{item.balance}</H4> <div>{item.currency}</div>
-                    </Balance>
-                </Container>
-                <Arrow src={arrow} alt="" />
-            </WalletWrapper>
-        </>
-
-
+        <WalletWrapper img={img} >
+            <Container>
+                <Title>
+                    <div>
+                        <WalletIMG src={item.imgURL} />
+                    </div>
+                    <h5>{item.name}</h5>
+                </Title>
+                <Balance>
+                    <H4>{item.balance}</H4> <div>{item.currency}</div>
+                </Balance>
+            </Container>
+            <Arrow src={arrow} alt="" />
+        </WalletWrapper>
     )
 }
 
