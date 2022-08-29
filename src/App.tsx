@@ -1,13 +1,14 @@
 import React from 'react';
+
+import Accounts from './pages/accounts';
+import Header from './components/layout/header';
+import SideBar from './components/layout/sideBar';
+
 import styled from 'styled-components';
-import Accounts from './accounts';
-import Header from './layout/header';
-import SideBar from './layout/sideBar';
 
 function App() {
   return (
     <>
-      <Header />
       <Header />
       <DisplayFlex>
         <SideBar />
@@ -17,8 +18,16 @@ function App() {
   );
 }
 
-const DisplayFlex = styled.div`
+export const DisplayFlex = styled.div`
   display: flex;
+`;
+
+export const Tittle = styled.div`
+  font-family: 'Aribau Grotesk';
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 32px;
+  margin-left: 20px;
 `;
 
 export default App;

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styled from 'styled-components';
 import Swal from "sweetalert2";
 import Loader from "../../components/shared/Loader";
+
+import { AddWalletWrapper, ModalInfo, TitleBox, Title, TitleInfo, CloseModal, SelectItems, D_Flex, CreatedBtn } from './styled'
 
 export default function AddWalletModal({ isOpen, setModalIsOpen, getNewData, setGetNewData }) {
     const [selectedWallet, setSelectedWallet] = useState('Stellar');
@@ -31,7 +32,7 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, getNewData, set
         });
     }, [selectedWallet, getDataAgain])
 
-    const sendDatatoServer = () => {
+    const sendDataToServer = () => {
         let filteredWallet = sendServerWalletName.filter((i) => i.name === selectedWallet)
         let filteredWalletOBJ = (filteredWallet[0].currency)
         try {
@@ -56,29 +57,28 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, getNewData, set
         <AddWalletWrapper>
             <ModalInfo>
                 <TitleBox>
-                    <h3>Add new wallet</h3>
+                    <Title>Add new wallet</Title>
                     <CloseModal onClick={() => setModalIsOpen(false)}> X </CloseModal>
                 </TitleBox>
                 <TitleInfo>
                     The crypto wallet will be created instantly and be available in your list of wallets.
                 </TitleInfo>
-                <div>
-                    {isLoaded ? <Loader />
-                        : <form >
-                            <SelectItems onChange={(event) => changeFruit(event.target.value)} value={selectedWallet}>
-                                <option value="Stellar">Stellar</option>
-                                <option value="Litecoin">Litecoin</option>
-                                <option value="SureRemit">SureRemit</option>
-                                <option value="Tether">Tether</option>
-                                <option value="Ripple">Ripple</option>
-                                <option value="Dogecoin">Dogecoin</option>
-                                <option value="TRON">TRON</option>
-                            </SelectItems>
-                        </form>
-                    }
-                </div>
+                {isLoaded
+                    ? <Loader />
+                    : <form >
+                        <SelectItems onChange={(event) => changeFruit(event.target.value)} value={selectedWallet}>
+                            <option value="Stellar">Stellar</option>
+                            <option value="Litecoin">Litecoin</option>
+                            <option value="SureRemit">SureRemit</option>
+                            <option value="Tether">Tether</option>
+                            <option value="Ripple">Ripple</option>
+                            <option value="Dogecoin">Dogecoin</option>
+                            <option value="TRON">TRON</option>
+                        </SelectItems>
+                    </form>
+                }
                 <D_Flex>
-                    <CreatedBtn onClick={sendDatatoServer}>
+                    <CreatedBtn onClick={sendDataToServer}>
                         Created
                     </CreatedBtn>
                 </D_Flex>
@@ -86,85 +86,3 @@ export default function AddWalletModal({ isOpen, setModalIsOpen, getNewData, set
         </AddWalletWrapper>
     )
 }
-
-const AddWalletWrapper = styled.div`
-position: fixed;
-height: 100vh;
-width: 100%;
-background-color: rgba(0, 0, 0, 0.4);
-top: 0;
-right: 0;
-bottom: 0;
-left: 0;
-z-index: 999;
-display: flex;
-justify-content: flex-end;
-animation-name: slowmation;
-animation-duration: 2s;
-`;
-
-const ModalInfo = styled.div`
-width: 440px;
-height: 100%;
-max-width: 100%;
-background: #ffffff;
-overflow-y: auto;
-padding: 20px;
-padding-top: 80px;
-`;
-
-const TitleBox = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-`;
-
-const TitleInfo = styled.div`
-font-family: 'Aribau Grotesk';
-font-style: normal;
-font-weight: 400;
-font-size: 18px;
-line-height: 26px;
-`;
-
-const CloseModal = styled.button`
-background: white;
-font-weight: 700;
-font-size: 18px;
-transition: 0.5s;
-&:hover {
-  transform: rotate(180deg);
-  background: black;
-  color: #ffffff;
-}
-`;
-
-const SelectItems = styled.select`
-margin-top: 40px;
-width: 100%;
-height: 50px;
-font-family: 'Aribau Grotesk';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 16px;
-`;
-
-const D_Flex = styled.div`
-margin-top: 150px;
-display: flex;
-justify-content: center;
-`;
-
-const CreatedBtn = styled.button`
-background: #000000;
-border-radius: 40px;
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-padding: 18px 54px;
-gap: 10px;
-cursor: pointer;
-color: #ffffff;
-}
-`;
